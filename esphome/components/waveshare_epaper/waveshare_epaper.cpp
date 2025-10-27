@@ -813,6 +813,114 @@ uint32_t WaveshareEPaperTypeA::idle_timeout_() {
   }
 }
 
+
+
+void GDEY0213F51::initialize()
+{
+  delay(50);//At least 20ms delay 
+  this->reset_();
+	delay(50);//At least 50ms delay 
+	this->wait_until_idle_();
+  this->command(0x4D);
+  this->data(0x78);
+
+  this->command(0x00); //PSR
+  this->data(0x0F);
+  this->data(0x29);
+
+  this->command(0x01); //PWRR
+  this->data(0x07);
+
+  
+  this->command(0x03); //POFS
+  this->data(0x10);
+  this->data(0x54);
+  this->data(0x44);
+  
+  this->command(0x06); //BTST_P
+  this->data(0x0F);
+  this->data(0x0A);
+  this->data(0x2F);
+  this->data(0x25);
+  this->data(0x22);
+  this->data(0x2E);
+  this->data(0x21); 
+
+  this->command(0x50); //CDI
+  this->data(0x37);
+  
+  this->command(0x60); //TCON
+  this->data(0x02);
+  this->data(0x02);
+  
+  this->command(0x61); //TRES
+  this->data(128/256);   // Source_BITS_H
+  this->data(128%256);   // Source_BITS_L
+  this->data(250/256);     // Gate_BITS_H
+  this->data(250%256);     // Gate_BITS_L  
+  
+  this->command(0xE7);
+  this->data(0x1C);
+  
+  this->command(0xE3); 
+  this->data(0x22);
+  
+  this->command(0xB4);
+  this->data(0xD0);
+  this->command(0xB5);
+  this->data(0x03);
+  
+  this->command(0xE9);
+  this->data(0x01); 
+
+  this->command(0x30);
+  this->data(0x08);  
+  
+  this->command(0x04);
+  this->wait_until_idle_();  
+}
+
+void HOT GDEY0213F51::display()
+{
+  
+  this->initialize();
+  const uint32_t buf_len = this->get_buffer_length_();
+
+  unsigned int i,j;
+  unsigned char temp1;
+  unsigned char data_H1,data_H2,data_L1,data_L2,data;
+  this->command(0x10);  
+
+    for(i=0;i<buf_len;i++)  
+	{
+      temp1=(this->buffer_[i]); 
+      data_H1=(temp1>>6&0x03)<<6;      
+      data_H2=(temp1>>4&0x03)<<4;
+      data_L1=(temp1>>2&0x03)<<2;
+      data_L2=(temp1&0x03);
+      data=data_H1|data_H2|data_L1|data_L2;
+      this->data(data);
+  }
+
+  this->command(0x12); //Display Update Control
+	this->data(0x00);
+  this->wait_until_idle_(); 
+}
+
+int GDEY0213F51::get_width_internal() { return 128; }
+int GDEY0213F51::get_height_internal() { return 250; }
+void GDEY0213F51::dump_config() {
+  LOG_DISPLAY("", "GoodDisplay E-Paper", this);
+  ESP_LOGCONFIG(TAG, "  Model: 2.13in (BWRY) GDEY0213F51");
+  LOG_PIN("  Reset Pin: ", this->reset_pin_);
+  LOG_PIN("  DC Pin: ", this->dc_pin_);
+  LOG_PIN("  Busy Pin: ", this->busy_pin_);
+  LOG_UPDATE_INTERVAL(this);
+}
+void GDEY0213F51::set_full_update_every(uint32_t full_update_every) {
+  this->full_update_every_ = full_update_every;
+}
+
 // ========================================================
 //                          Type B
 // ========================================================

@@ -196,6 +196,32 @@ enum WaveshareEPaperTypeBModel {
   WAVESHARE_EPAPER_13_3_IN_K,
 };
 
+class GDEY0213F51 : public WaveshareEPaper4C {
+ public:
+  void initialize() override;
+
+  void display() override;
+
+  void dump_config() override;
+
+  void deep_sleep() override {
+    this->command(0X02);      //power off
+    this->wait_until_idle_();         //waiting for the electronic paper IC to release the idle signal
+    delay(100);   //!!!The delay here is necessary,100mS at least!!!  
+
+	  this->command(0X07);  	//deep sleep
+	  this->data(0xA5);
+  }
+
+  void set_full_update_every(uint32_t full_update_every);
+ protected:
+  uint32_t full_update_every_{30};
+  uint32_t at_update_{0};
+
+  int get_width_internal() override;
+  int get_height_internal() override;
+};
+
 class WaveshareEPaper1P54InBV2 : public WaveshareEPaperBWR {
  public:
   void initialize() override;
