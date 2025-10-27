@@ -1613,6 +1613,116 @@ void WaveshareEPaper2P9InD::dump_config() {
   LOG_UPDATE_INTERVAL(this);
 }
 
+void GDEY029F51H::initialize()
+{
+  delay(50);//At least 20ms delay 
+  this->reset_();
+	delay(50);//At least 50ms delay 
+	this->wait_until_idle_();
+  this->command(0x4D);
+  this->data(0x78);
+
+  this->command(0x00); //PSR
+  this->data(0x0F);
+  this->data(0x29);
+
+  this->command(0x01); //PWRR
+  this->data(0x07);
+  this->data(0x00);
+  
+  this->command(0x03); //POFS
+  this->data(0x10);
+  this->data(0x54);
+  this->data(0x44);
+  
+  this->command(0x06); //BTST_P
+  this->data(0x05);
+  this->data(0x00);
+  this->data(0x3F);
+  this->data(0x0A);
+  this->data(0x25);
+  this->data(0x12);
+  this->data(0x1A); 
+
+  this->command(0x50); //CDI
+  this->data(0x37);
+  
+  this->command(0x60); //TCON
+  this->data(0x02);
+  this->data(0x02);
+  
+  this->command(0x61); //TRES
+  this->data(128/256);   // Source_BITS_H
+  this->data(128%256);   // Source_BITS_L
+  this->data(296/256);     // Gate_BITS_H
+  this->data(296%256);     // Gate_BITS_L  
+  
+  this->command(0xE7);
+  this->data(0x1C);
+  
+  this->command(0xE3); 
+  this->data(0x22);
+  
+  this->command(0xB4);
+  this->data(0xD0);
+  this->command(0xB5);
+  this->data(0x03);
+  
+  this->command(0xE9);
+  this->data(0x01); 
+
+  this->command(0x30);
+  this->data(0x08);  
+  
+  this->command(0x04);
+  this->wait_until_idle_();  
+}
+
+void HOT GDEY029F51H::display()
+{
+  
+  this->initialize();
+  const uint32_t buf_len = this->get_buffer_length_();
+
+  unsigned int i,j;
+  unsigned char temp1;
+  unsigned char data_H1,data_H2,data_L1,data_L2,data;
+  this->command(0x10);  
+  // for (uint32_t i = 0; i < buf_len; i++) {
+  //   this->data(this->buffer_[i]);
+  // }
+  // this->start_data_();
+  // this->write_array(this->buffer_, this->get_buffer_length_());
+  // this->end_data_();
+    for(i=0;i<buf_len;i++)  
+	{
+      temp1=(this->buffer_[i]); 
+      data_H1=(temp1>>6&0x03)<<6;      
+      data_H2=(temp1>>4&0x03)<<4;
+      data_L1=(temp1>>2&0x03)<<2;
+      data_L2=(temp1&0x03);
+      data=data_H1|data_H2|data_L1|data_L2;
+      this->data(data);
+  } 
+  this->command(0x12); //Display Update Control
+	this->data(0x00);
+  this->wait_until_idle_(); 
+}
+
+int GDEY029F51H::get_width_internal() { return 128; }
+int GDEY029F51H::get_height_internal() { return 296; }
+void GDEY029F51H::dump_config() {
+  LOG_DISPLAY("", "GoodDisplay E-Paper", this);
+  ESP_LOGCONFIG(TAG, "  Model: 2.9in (BWRY) GDEY029F51H");
+  LOG_PIN("  Reset Pin: ", this->reset_pin_);
+  LOG_PIN("  DC Pin: ", this->dc_pin_);
+  LOG_PIN("  Busy Pin: ", this->busy_pin_);
+  LOG_UPDATE_INTERVAL(this);
+}
+void GDEY029F51H::set_full_update_every(uint32_t full_update_every) {
+  this->full_update_every_ = full_update_every;
+}
+
 // DKE 2.9
 // https://www.badge.team/docs/badges/sha2017/hardware/#e-ink-display-the-dke-group-depg0290b1
 // https://www.badge.team/docs/badges/sha2017/hardware/DEPG0290B01V3.0.pdf
