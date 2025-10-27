@@ -368,6 +368,7 @@ void WaveshareEPaper4C::fill(Color color) {
     {
         this->buffer_[i] =  ((pixel_color >> 6) & 0x03) * 0x85;
     }
+  }  
 }
 void HOT WaveshareEPaper4C::draw_absolute_pixel_internal(int x, int y, Color color) {
   if (x >= this->get_width_internal() || y >= this->get_height_internal() || x < 0 || y < 0)
