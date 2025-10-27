@@ -25,6 +25,7 @@ WaveshareEPaperBWR = waveshare_epaper_ns.class_(
     "WaveshareEPaperBWR", WaveshareEPaperBase
 )
 WaveshareEPaper7C = waveshare_epaper_ns.class_("WaveshareEPaper7C", WaveshareEPaperBase)
+WaveshareEPaper4C = waveshare_epaper_ns.class_("WaveshareEPaper4C", WaveshareEPaperBase)
 WaveshareEPaperTypeA = waveshare_epaper_ns.class_(
     "WaveshareEPaperTypeA", WaveshareEPaper
 )
