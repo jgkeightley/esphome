@@ -1,5 +1,0 @@
-climate:
-  - platform: gree
-    name: GREE
-    model: generic
-    transmitter_id: xmitr

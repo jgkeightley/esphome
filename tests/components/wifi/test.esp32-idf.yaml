@@ -1,7 +1,0 @@
-psram:
-
-wifi:
-  use_psram: true
-
-packages:
-  - !include common.yaml
