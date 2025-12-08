@@ -147,6 +147,7 @@ MODELS = {
     "2.13in-ttgo-b74": ("a", WaveshareEPaperTypeAModel.TTGO_EPAPER_2_13_IN_B74),
     "2.90in": ("a", WaveshareEPaperTypeAModel.WAVESHARE_EPAPER_2_9_IN),
     "gdey0213f51": ("c", GDEY0213F51),
+    "gdey029f51h": ("c", GDEY029F51H),
     "2.90inv2": ("a", WaveshareEPaperTypeAModel.WAVESHARE_EPAPER_2_9_IN_V2),
     "gdew029t5": ("c", GDEW029T5),
     "2.70in": ("b", WaveshareEPaper2P7In),
